@@ -26,11 +26,24 @@ function generateSecurePassword(input) {
         }
     }
 
-    // Agregar caracteres aleatorios para alcanzar al menos 12 caracteres
+    // Agregar caracteres aleatorios para asegurar un mínimo de 12 caracteres
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
     while (transformed.length < 12) {
         transformed += characters.charAt(Math.floor(Math.random() * characters.length));
     }
 
+    // Agregar una cadena aleatoria adicional para hacer que la contraseña sea única cada vez
+    const uniqueString = generateRandomString(5);
+    transformed += uniqueString;
+
     return transformed;
+}
+
+function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
 }
