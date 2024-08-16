@@ -1,48 +1,36 @@
-document.getElementById("generateBtn").addEventListener("click", function() {
-    const phrase = document.getElementById("phrase").value.trim();
-
-    if (phrase === "") {
-        alert("Por favor, ingresa una frase o palabra.");
-        return;
+document.getElementById('generate').addEventListener('click', function() {
+    const phrase = document.getElementById('phrase').value;
+    if (phrase) {
+        const securePassword = generateSecurePassword(phrase);
+        document.getElementById('password').textContent = securePassword;
+    } else {
+        alert('Por favor, ingresa una frase.');
     }
-
-    const password = generateSecurePassword(phrase);
-    document.getElementById("password").textContent = password;
 });
 
 function generateSecurePassword(input) {
-    const normalizedInput = input.replace(/ /g, "").toLowerCase();
-    const hash = generateHash(normalizedInput);
-    return convertHashToPassword(hash);
-}
+    const replacements = {
+        'a': '@',
+        'e': '3',
+        'i': '1',
+        'o': '0',
+        's': '$',
+        'g': '9'
+    };
 
-function generateHash(input) {
-    let hash = 0, i, chr;
-    if (input.length === 0) return hash;
-    for (i = 0; i < input.length; i++) {
-        chr = input.charCodeAt(i);
-        hash = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-    }
-    return hash.toString(16);
-}
-
-function convertHashToPassword(hash) {
-    const symbols = "!@#$%^&*()";
-    let password = "";
-
-    for (let i = 0; i < 12; i++) {
-        const char = hash.charAt(i % hash.length);
-        if (i % 4 === 0) {
-            password += char.toUpperCase();
-        } else if (i % 4 === 1) {
-            password += parseInt(char, 16) % 10;
-        } else if (i % 4 === 2) {
-            password += char;
-        } else {
-            password += symbols[parseInt(char, 16) % symbols.length];
+    let transformed = '';
+    for (let i = 0; i < input.length; i++) {
+        const char = input[i].toLowerCase();
+        if (char !== ' ') {
+            transformed += replacements[char] || char;
         }
     }
 
-    return password;
+    // Agregar caracteres aleatorios para alcanzar al menos 12 caracteres
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    while (transformed.length < 12) {
+        transformed += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    return transformed;
 }
